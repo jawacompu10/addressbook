@@ -4,15 +4,18 @@ package main
 import (
 	"fmt"
 	"log"
-	"net/http"
 	"os"
 	"os/signal"
 	"syscall"
 
-	"github.com/gorilla/mux"
-
 	repo "bitbucket.org/jawacompu10/addressbook/repo/mongo"
 	"bitbucket.org/jawacompu10/addressbook/service"
+	"bitbucket.org/jawacompu10/addressbook/transport"
+	"bitbucket.org/jawacompu10/addressbook/transport/http"
+)
+
+var (
+	httpTransport, grpcTransport transport.Transport
 )
 
 func main() {
@@ -32,32 +35,12 @@ func main() {
 	go handleSignals(&errorChan)
 
 	addressService := service.NewService(db)
-	r := buildRouter(addressService)
-	http.Handle("/", r)
+	httpTransport = http.New(addressService)
 	go func() {
-		errorChan <- http.ListenAndServe(":8080", nil)
+		errorChan <- httpTransport.Start()
 	}()
 
 	log.Println("Exit", <-errorChan)
-}
-
-func buildRouter(addressService *service.AddressbookService) *mux.Router {
-	r := mux.NewRouter()
-	r.HandleFunc("/address/{id}", addressService.GetAddress).Methods("GET")
-	r.HandleFunc("/address/user/{id}", addressService.GetUserAddresses).Methods("GET")
-	r.HandleFunc("/address", addressService.CreateAddress).Methods("POST")
-	r.HandleFunc("/address", addressService.UpdateAddress).Methods("PUT")
-
-	r.Use(addJSONTypeHeader)
-
-	return r
-}
-
-func addJSONTypeHeader(nextHandler http.Handler) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
-		w.Header().Add("Content-Type", "application/json")
-		nextHandler.ServeHTTP(w, req)
-	})
 }
 
 func handleSignals(errorChan *chan error) {

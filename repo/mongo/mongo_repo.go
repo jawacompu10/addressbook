@@ -9,12 +9,12 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 
-	"bitbucket.org/jawacompu10/addressbook/service"
+	"bitbucket.org/jawacompu10/addressbook/transport"
 )
 
 type dbAddress struct {
 	ID      primitive.ObjectID `bson:"_id"`
-	Address service.Address    `bson:"address"`
+	Address transport.Address  `bson:"address"`
 }
 
 // MongoRepo provides DB support for addressbook service with MongoDB
@@ -32,9 +32,9 @@ type DBInfo struct {
 }
 
 // GetAddressByID fetches and returns an address from the DB, filtered by the given ID
-func (mr *MongoRepo) GetAddressByID(addrID string) (service.Address, error) {
+func (mr *MongoRepo) GetAddressByID(addrID string) (transport.Address, error) {
 	dbAddr := &dbAddress{}
-	addr := service.Address{}
+	addr := transport.Address{}
 
 	id, err := primitive.ObjectIDFromHex(addrID)
 	if err != nil {
@@ -76,8 +76,8 @@ func NewRepo(dbInfo DBInfo) (*MongoRepo, error) {
 }
 
 // GetUserAddresses returns addresses filtered by the given user ID
-func (mr *MongoRepo) GetUserAddresses(userID string) ([]service.Address, error) {
-	addresses := make([]service.Address, 0)
+func (mr *MongoRepo) GetUserAddresses(userID string) ([]transport.Address, error) {
+	addresses := make([]transport.Address, 0)
 	filter := bson.M{
 		"address.userid": userID,
 	}
@@ -98,7 +98,7 @@ func (mr *MongoRepo) GetUserAddresses(userID string) ([]service.Address, error) 
 }
 
 // AddAddress adds an address to the DB
-func (mr *MongoRepo) AddAddress(addr service.Address) (service.Address, error) {
+func (mr *MongoRepo) AddAddress(addr transport.Address) (transport.Address, error) {
 	collection := mr.client.Database(mr.dbInfo.DBName).Collection(mr.dbInfo.CollectionName)
 	dbAddr := &dbAddress{}
 	dbAddr.fromServiceAddress(addr)
@@ -114,7 +114,7 @@ func (mr *MongoRepo) AddAddress(addr service.Address) (service.Address, error) {
 }
 
 // UpdateAddress updates an existing address record in the DB
-func (mr *MongoRepo) UpdateAddress(addr service.Address) (service.Address, error) {
+func (mr *MongoRepo) UpdateAddress(addr transport.Address) (transport.Address, error) {
 	dbAddr := &dbAddress{}
 
 	id, err := primitive.ObjectIDFromHex(addr.ID)
