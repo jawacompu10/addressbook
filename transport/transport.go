@@ -1,5 +1,7 @@
 package transport
 
+import "bitbucket.org/jawacompu10/addressbook/models"
+
 // Transport is the interface that defines the transport layer
 type Transport interface {
 	Start() error
@@ -7,8 +9,8 @@ type Transport interface {
 
 // AddressService defines the address book service
 type AddressService interface {
-	GetAddressByID(string) (Address, error)
-	GetUserAddresses(string) ([]Address, error)
-	CreateAddress(Address) (Address, error)
-	UpdateAddress(Address) (Address, error)
+	GetAddressByID(string) (models.Address, error)
+	GetUserAddresses(string) ([]models.Address, error)
+	CreateAddress(models.Address) (models.Address, error)
+	UpdateAddress(models.Address) (models.Address, error)
 }

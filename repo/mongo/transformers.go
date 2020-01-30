@@ -1,11 +1,11 @@
 package repo
 
 import (
-	"bitbucket.org/jawacompu10/addressbook/transport"
+	"bitbucket.org/jawacompu10/addressbook/models"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
-func (da *dbAddress) fromServiceAddress(addr transport.Address) error {
+func (da *dbAddress) fromServiceAddress(addr models.Address) error {
 	if addr.ID != "" {
 		var err error
 		da.ID, err = primitive.ObjectIDFromHex(addr.ID)
@@ -19,7 +19,7 @@ func (da *dbAddress) fromServiceAddress(addr transport.Address) error {
 	return nil
 }
 
-func (da *dbAddress) toServiceAddress() transport.Address {
+func (da *dbAddress) toServiceAddress() models.Address {
 	addr := da.Address
 	addr.ID = da.ID.Hex()
 	return addr

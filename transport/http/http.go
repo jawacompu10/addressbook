@@ -9,6 +9,12 @@ import (
 	"github.com/gorilla/mux"
 )
 
+// StatusCoder is the interface that the custom errors should implement so that
+// the handlers know what status code to return to the requests in case of the error
+type StatusCoder interface {
+	GetStatusCode() int
+}
+
 // Transport implements the Transport layer for http
 type Transport struct {
 	service transport.AddressService

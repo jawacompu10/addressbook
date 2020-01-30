@@ -5,11 +5,11 @@ import (
 	"io"
 	"time"
 
-	"bitbucket.org/jawacompu10/addressbook/transport"
+	"bitbucket.org/jawacompu10/addressbook/models"
 )
 
-func decodeCreateAddressRequest(rdr io.Reader) (transport.Address, error) {
-	var addr transport.Address
+func decodeCreateAddressRequest(rdr io.Reader) (models.Address, error) {
+	var addr models.Address
 	err := json.NewDecoder(rdr).Decode(&addr)
 	if err != nil {
 		return addr, err
@@ -19,8 +19,8 @@ func decodeCreateAddressRequest(rdr io.Reader) (transport.Address, error) {
 	return addr, err
 }
 
-func decodeUpdateAddressRequest(rdr io.Reader) (transport.Address, error) {
-	var addr transport.Address
+func decodeUpdateAddressRequest(rdr io.Reader) (models.Address, error) {
+	var addr models.Address
 	err := json.NewDecoder(rdr).Decode(&addr)
 	if err != nil {
 		return addr, err
@@ -29,6 +29,6 @@ func decodeUpdateAddressRequest(rdr io.Reader) (transport.Address, error) {
 	return addr, err
 }
 
-func fillDefaultValues(addr *transport.Address) {
+func fillDefaultValues(addr *models.Address) {
 	addr.ModifiedAt = time.Now()
 }
