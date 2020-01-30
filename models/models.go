@@ -1,4 +1,4 @@
-package transport
+package models
 
 import (
 	"time"
@@ -19,4 +19,4 @@ type Address struct {
 }
 
 // Details is a map to store the address details like street, city, etc
-type Details map[string]interface{}
+type Details map[string]string

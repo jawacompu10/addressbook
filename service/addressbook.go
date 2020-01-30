@@ -3,7 +3,7 @@
 
 package service
 
-import "bitbucket.org/jawacompu10/addressbook/transport"
+import "bitbucket.org/jawacompu10/addressbook/models"
 
 // AddressbookService contains methods that act as the RPC for address book service
 type AddressbookService struct {
@@ -17,8 +17,8 @@ func NewService(db Repository) *AddressbookService {
 
 // Repository is the interface that a DB wrapper for addressbook should implement
 type Repository interface {
-	GetAddressByID(string) (transport.Address, error)
-	GetUserAddresses(string) ([]transport.Address, error)
-	AddAddress(transport.Address) (transport.Address, error)
-	UpdateAddress(transport.Address) (transport.Address, error)
+	GetAddressByID(string) (models.Address, error)
+	GetUserAddresses(string) ([]models.Address, error)
+	AddAddress(models.Address) (models.Address, error)
+	UpdateAddress(models.Address) (models.Address, error)
 }
