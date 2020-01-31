@@ -1,10 +1,11 @@
-package repo
+package mongo
 
 import (
 	"context"
 	"log"
 
 	"bitbucket.org/jawacompu10/addressbook/models"
+	"bitbucket.org/jawacompu10/addressbook/repo"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -16,8 +17,8 @@ type dbAddress struct {
 	Address models.Address     `bson:"address"`
 }
 
-// MongoRepo provides DB support for addressbook service with MongoDB
-type MongoRepo struct {
+// Repo provides DB support for addressbook service with MongoDB
+type Repo struct {
 	client *mongo.Client
 	ctx    context.Context
 	dbInfo DBInfo
@@ -31,14 +32,15 @@ type DBInfo struct {
 }
 
 // GetAddressByID fetches and returns an address from the DB, filtered by the given ID
-func (mr *MongoRepo) GetAddressByID(addrID string) (models.Address, error) {
+func (mr *Repo) GetAddressByID(addrID string) (models.Address, error) {
 	dbAddr := &dbAddress{}
 	addr := models.Address{}
 
 	id, err := primitive.ObjectIDFromHex(addrID)
 	if err != nil {
-		log.Printf("Invalid ID: %s", addrID)
-		return addr, nil
+		err = &repo.InvalidIDError{ID: addrID}
+		log.Println(err)
+		return addr, err
 	}
 	filter := bson.M{
 		"_id": id,
@@ -54,7 +56,7 @@ func (mr *MongoRepo) GetAddressByID(addrID string) (models.Address, error) {
 }
 
 // NewRepo creates and returns a new repo value to interact with DB
-func NewRepo(dbInfo DBInfo) (*MongoRepo, error) {
+func NewRepo(dbInfo DBInfo) (*Repo, error) {
 	ctx := context.Background()
 	client, err := mongo.NewClient(options.Client().ApplyURI(dbInfo.URL))
 	if err != nil {
@@ -66,7 +68,7 @@ func NewRepo(dbInfo DBInfo) (*MongoRepo, error) {
 	}
 	log.Println("Connected to DB")
 
-	return &MongoRepo{
+	return &Repo{
 		client: client,
 		ctx:    ctx,
 		dbInfo: dbInfo,
@@ -75,7 +77,7 @@ func NewRepo(dbInfo DBInfo) (*MongoRepo, error) {
 }
 
 // GetUserAddresses returns addresses filtered by the given user ID
-func (mr *MongoRepo) GetUserAddresses(userID string) ([]models.Address, error) {
+func (mr *Repo) GetUserAddresses(userID string) ([]models.Address, error) {
 	addresses := make([]models.Address, 0)
 	filter := bson.M{
 		"address.userid": userID,
@@ -97,7 +99,7 @@ func (mr *MongoRepo) GetUserAddresses(userID string) ([]models.Address, error) {
 }
 
 // AddAddress adds an address to the DB
-func (mr *MongoRepo) AddAddress(addr models.Address) (models.Address, error) {
+func (mr *Repo) AddAddress(addr models.Address) (models.Address, error) {
 	collection := mr.client.Database(mr.dbInfo.DBName).Collection(mr.dbInfo.CollectionName)
 	dbAddr := &dbAddress{}
 	dbAddr.fromServiceAddress(addr)
@@ -113,12 +115,13 @@ func (mr *MongoRepo) AddAddress(addr models.Address) (models.Address, error) {
 }
 
 // UpdateAddress updates an existing address record in the DB
-func (mr *MongoRepo) UpdateAddress(addr models.Address) (models.Address, error) {
+func (mr *Repo) UpdateAddress(addr models.Address) (models.Address, error) {
 	dbAddr := &dbAddress{}
 
 	id, err := primitive.ObjectIDFromHex(addr.ID)
 	if err != nil {
-		log.Printf("Invalid ID: %s", addr.ID)
+		err = &repo.InvalidIDError{ID: addr.ID}
+		log.Println(err)
 		return addr, err
 	}
 	filter := bson.M{

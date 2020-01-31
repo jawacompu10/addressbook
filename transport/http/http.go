@@ -62,7 +62,7 @@ func (ht *Transport) GetAddress(w http.ResponseWriter, req *http.Request) {
 	addr, err := ht.service.GetAddressByID(addrID)
 	if err != nil {
 		log.Println(err)
-		http.Error(w, "failed to get record with given ID", http.StatusInternalServerError)
+		http.Error(w, err.Error(), GetStatusCode(err))
 		return
 	}
 	json.NewEncoder(w).Encode(addr)
@@ -83,6 +83,7 @@ func (ht *Transport) GetUserAddresses(w http.ResponseWriter, req *http.Request) 
 
 // CreateAddress is the RPC for the create address API endpoint
 func (ht *Transport) CreateAddress(w http.ResponseWriter, req *http.Request) {
+	log.Println("Request to CreateAddress")
 	addr, err := decodeCreateAddressRequest(req.Body)
 	if err != nil {
 		http.Error(w, "Invalid payload", http.StatusBadRequest)
@@ -105,8 +106,24 @@ func (ht *Transport) UpdateAddress(w http.ResponseWriter, req *http.Request) {
 	}
 	addr, err = ht.service.UpdateAddress(addr)
 	if err != nil {
-		http.Error(w, "DB write failed"+err.Error(), http.StatusInternalServerError)
+		http.Error(w, err.Error(), GetStatusCode(err))
 		return
 	}
 	json.NewEncoder(w).Encode(addr)
+}
+
+// GetStatusCode returns the HTTPS status code that should be returned
+// in the event of the given error
+func GetStatusCode(err error) int {
+	code := http.StatusInternalServerError
+	if sc, ok := getErrAsStatusCoder(err); ok {
+		code = sc.GetStatusCode()
+	}
+	return code
+}
+
+func getErrAsStatusCoder(err error) (StatusCoder, bool) {
+	var i interface{} = err
+	v, ok := i.(StatusCoder)
+	return v, ok
 }
