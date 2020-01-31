@@ -11,6 +11,7 @@ import (
 	repo "bitbucket.org/jawacompu10/addressbook/repo/mongo"
 	"bitbucket.org/jawacompu10/addressbook/service"
 	"bitbucket.org/jawacompu10/addressbook/transport"
+	"bitbucket.org/jawacompu10/addressbook/transport/grpc"
 	"bitbucket.org/jawacompu10/addressbook/transport/http"
 )
 
@@ -36,8 +37,12 @@ func main() {
 
 	addressService := service.NewService(db)
 	httpTransport = http.New(addressService)
+	grpcTransport = grpc.New(addressService)
 	go func() {
 		errorChan <- httpTransport.Start()
+	}()
+	go func() {
+		errorChan <- grpcTransport.Start()
 	}()
 
 	log.Println("Exit", <-errorChan)

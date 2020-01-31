@@ -1,4 +1,4 @@
-package repo
+package mongo
 
 import (
 	"bitbucket.org/jawacompu10/addressbook/models"
