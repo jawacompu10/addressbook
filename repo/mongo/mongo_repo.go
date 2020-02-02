@@ -62,7 +62,7 @@ func NewRepo(dbInfo DBInfo) (*Repo, error) {
 	if err != nil {
 		return nil, err
 	}
-	client.Connect(ctx)
+	err = client.Connect(ctx)
 	if err != nil {
 		return nil, err
 	}
