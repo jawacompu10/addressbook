@@ -5,7 +5,8 @@ import (
 	"log"
 	"net/http"
 
-	"bitbucket.org/jawacompu10/addressbook/transport"
+	"addressbook/transport"
+
 	"github.com/gorilla/mux"
 )
 
@@ -86,7 +87,7 @@ func (ht *Transport) CreateAddress(w http.ResponseWriter, req *http.Request) {
 	log.Println("Request to CreateAddress")
 	addr, err := decodeCreateAddressRequest(req.Body)
 	if err != nil {
-		http.Error(w, "Invalid payload", http.StatusBadRequest)
+		http.Error(w, "Invalid payload: " + err.Error(), http.StatusBadRequest)
 		return
 	}
 	addr, err = ht.service.CreateAddress(addr)

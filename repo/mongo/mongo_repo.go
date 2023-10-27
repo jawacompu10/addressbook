@@ -4,8 +4,9 @@ import (
 	"context"
 	"log"
 
-	"bitbucket.org/jawacompu10/addressbook/models"
-	"bitbucket.org/jawacompu10/addressbook/repo"
+	"addressbook/models"
+	"addressbook/repo"
+
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"

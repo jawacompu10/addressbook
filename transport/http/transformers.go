@@ -5,7 +5,7 @@ import (
 	"io"
 	"time"
 
-	"bitbucket.org/jawacompu10/addressbook/models"
+	"addressbook/models"
 )
 
 func decodeCreateAddressRequest(rdr io.Reader) (models.Address, error) {

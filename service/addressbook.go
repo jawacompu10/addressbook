@@ -3,7 +3,7 @@
 
 package service
 
-import "bitbucket.org/jawacompu10/addressbook/models"
+import "addressbook/models"
 
 // AddressbookService contains methods that act as the RPC for address book service
 type AddressbookService struct {

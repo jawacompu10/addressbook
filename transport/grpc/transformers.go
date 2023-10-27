@@ -3,8 +3,8 @@ package grpc
 import (
 	"fmt"
 
-	"bitbucket.org/jawacompu10/addressbook/models"
-	"bitbucket.org/jawacompu10/addressbook/transport/grpc/addressbook"
+	"addressbook/models"
+	"addressbook/transport/grpc/addressbook"
 
 	"github.com/golang/protobuf/ptypes"
 )

@@ -1,6 +1,6 @@
 package transport
 
-import "bitbucket.org/jawacompu10/addressbook/models"
+import "addressbook/models"
 
 // Transport is the interface that defines the transport layer
 type Transport interface {

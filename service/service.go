@@ -1,6 +1,6 @@
 package service
 
-import "bitbucket.org/jawacompu10/addressbook/models"
+import "addressbook/models"
 
 // GetAddressByID gets an address specified by the given ID
 func (as *AddressbookService) GetAddressByID(id string) (models.Address, error) {

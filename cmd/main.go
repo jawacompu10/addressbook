@@ -8,11 +8,11 @@ import (
 	"os/signal"
 	"syscall"
 
-	repo "bitbucket.org/jawacompu10/addressbook/repo/mongo"
-	"bitbucket.org/jawacompu10/addressbook/service"
-	"bitbucket.org/jawacompu10/addressbook/transport"
-	"bitbucket.org/jawacompu10/addressbook/transport/grpc"
-	"bitbucket.org/jawacompu10/addressbook/transport/http"
+	repo "addressbook/repo/mongo"
+	"addressbook/service"
+	"addressbook/transport"
+	"addressbook/transport/grpc"
+	"addressbook/transport/http"
 )
 
 var (

@@ -5,8 +5,8 @@ import (
 	"log"
 	"net"
 
-	"bitbucket.org/jawacompu10/addressbook/transport"
-	"bitbucket.org/jawacompu10/addressbook/transport/grpc/addressbook"
+	"addressbook/transport"
+	"addressbook/transport/grpc/addressbook"
 
 	"google.golang.org/grpc"
 )

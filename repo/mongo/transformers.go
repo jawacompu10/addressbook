@@ -1,7 +1,8 @@
 package mongo
 
 import (
-	"bitbucket.org/jawacompu10/addressbook/models"
+	"addressbook/models"
+
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
